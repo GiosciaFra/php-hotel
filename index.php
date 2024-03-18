@@ -40,6 +40,15 @@ $hotels = [
 
 ];
 
+// Filtro gli hotel in base alla presenza del parcheggio
+$filteredHotels = array_filter($hotels, function ($hotel) {
+
+    if ($_GET['filtroParcheggio']) {
+        return $hotel['parking'];
+    }
+    return true;
+});
+
 ?>
 
 <!DOCTYPE html>
@@ -59,6 +68,18 @@ $hotels = [
 
     <div class="container">
         <h1>Elenco Hotel</h1>
+
+        <!-- Form per filtrare gli hotel con parcheggio -->
+        <form method="GET">
+            <div class="form-group">
+                <label for="filtroParcheggio">Mostra solo hotel con parcheggio:</label>
+                <input type="checkbox" id="filtroParcheggio" name="filtroParcheggio" value="true">
+            </div>
+            <button type="submit" class="btn btn-primary">Cerca</button>
+        </form>
+
+        <br>
+
         <table class="table">
             <thead>
                 <tr>
@@ -66,21 +87,22 @@ $hotels = [
                     <th scope="col">Descrizione</th>
                     <th scope="col">Parcheggio</th>
                     <th scope="col">Voto</th>
-                    <th scope="col">Distanza dal centro(km)</th>
+                    <th scope="col">Distanza dal centro (km)</th>
 
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($hotels as $hotel): ?>
+                <?php foreach ($filteredHotels as $hotel): ?>
                     <tr>
-                        <th scope="row">
+                        <th>
                             <?php echo $hotel['name']; ?>
                         </th>
                         <td>
                             <?php echo $hotel['description'] ?>
                         </td>
                         <td>
-                            <?php echo $hotel['parking'] ?>
+                            <!-- Aggiunto operatore ternario per stampare in pagina "disponibile" se trova 'true' e non "disponibile" se trova 'false' -->
+                            <?php echo $hotel['parking'] ? 'Disponibile' : 'Non disponibile'; ?>
                         </td>
                         <td>
                             <?php echo $hotel['vote'] ?>
